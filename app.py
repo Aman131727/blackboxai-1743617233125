@@ -125,5 +125,29 @@ def view_student(roll_number):
         return redirect(url_for('index'))
     return render_template('student_details.html', student=student)
 
+@app.route('/subject_topper/<subject>')
+def subject_topper(subject):
+    operations = StudentTrackerOperations()
+    topper, score = operations.get_subject_topper(subject)
+    if not topper:
+        flash(f'No grades recorded for {subject}', 'error')
+        return redirect(url_for('index'))
+    return render_template('subject_topper.html',
+                         subject=subject,
+                         topper_name=topper.name,
+                         topper_roll=topper.roll_number,
+                         score=score)
+
+@app.route('/class_average/<subject>')
+def class_average(subject):
+    operations = StudentTrackerOperations()
+    average = operations.get_class_average(subject)
+    if average == 0:
+        flash(f'No grades recorded for {subject}', 'error')
+        return redirect(url_for('index'))
+    return render_template('class_average.html',
+                         subject=subject,
+                         average=average)
+
 if __name__ == '__main__':
     app.run(debug=True)
