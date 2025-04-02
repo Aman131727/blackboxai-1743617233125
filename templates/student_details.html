@@ -17,7 +17,6 @@
     <div class="mb-8">
         <h2 class="text-xl font-semibold mb-4">Grades</h2>
         
-        {% if student.grades %}
         <div class="flex space-x-4 mb-6">
             {% for subject in student.grades.keys() %}
             <a href="/subject_topper/{{ subject }}" 
@@ -31,16 +30,7 @@
             {% endfor %}
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {% for subject, graph in graphs.items() %}
-            <div class="border rounded-lg p-4">
-                <h3 class="font-medium mb-2">{{ subject }}</h3>
-                <img src="data:image/png;base64,{{ graph }}" alt="{{ subject }} Score" class="w-full">
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {% for subject, grade in student.grades.items() %}
             <div class="border rounded-lg p-4">
                 <div class="flex justify-between items-center mb-2">
@@ -54,31 +44,33 @@
                     </span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div class="h-2.5 rounded-full 
+                    <div class="h-2.5 rounded-full
                         {% if grade >= 80 %}bg-green-500
                         {% elif grade >= 50 %}bg-yellow-500
                         {% else %}bg-red-500
-                        {% endif %}">
+                        {% endif %}" 
+                        style="width: {{ grade }}%">
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-    </div>
 
-    <div class="p-4 bg-blue-50 rounded-lg">
-        <h3 class="font-medium text-blue-800 mb-2">Overall Performance</h3>
-        <div class="flex items-center">
-            <div class="mr-4 text-3xl font-bold text-blue-600">
-                {{ student.average }}%
-            </div>
-            <div class="flex-1">
-                <div class="flex justify-between text-sm text-blue-700 mb-1">
-                    <span>0%</span>
-                    <span>100%</span>
+        <div class="p-4 bg-blue-50 rounded-lg mt-6">
+            <h3 class="font-medium text-blue-800 mb-2">Overall Performance</h3>
+            <div class="flex items-center">
+                <div class="mr-4 text-3xl font-bold text-blue-600">
+                    {{ student.average }}%
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div class="h-2.5 rounded-full bg-blue-600"></div>
+                <div class="flex-1">
+                    <div class="flex justify-between text-sm text-blue-700 mb-1">
+                        <span>0%</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="h-2.5 rounded-full bg-blue-600" 
+                             style="width: {{ student.average }}%"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,23 +86,4 @@
     </div>
     {% endif %}
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Set progress bar widths after page load
-    const grades = JSON.parse('{{ student.grades|tojson|safe }}');
-    const average = parseFloat('{{ student.average }}');
-    
-    if (grades) {
-        Object.entries(grades).forEach(([subject, grade]) => {
-            const slug = subject.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            document.querySelectorAll(`.subject-${slug}-bar`).forEach(el => {
-                el.style.width = `${grade}%`;
-            });
-        });
-    }
-    
-    document.querySelector('.overall-average-bar').style.width = `${average}%`;
-});
-</script>
 {% endblock %}
