@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from database import init_db, Student
+from database_operations import StudentTrackerOperations
 from sqlalchemy.orm import Session
 import os
 import json
+import matplotlib.pyplot as plt
+import io
+import base64
 
 class StudentTracker:
     def __init__(self):
